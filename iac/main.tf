@@ -1,3 +1,6 @@
+# Arquivo principal que provisiona a máquina virtual (EC2) da aplicação.
+
+# Busca a imagem mais recente do Ubuntu 22.04 LTS
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -14,12 +17,13 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# Criação da instância EC2 vinculada aos grupos de segurança e script de inicialização
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
-  key_name = "posweb-myapp-2026"
+  ami             = data.aws_ami.ubuntu.id
+  instance_type   = "t3.micro"
+  key_name        = "posweb-myapp-2026"
   security_groups = ["posweb_myapp_2026"]
-  user_data = base64encode(data.template_file.user_data.rendered)
+  user_data       = base64encode(data.template_file.user_data.rendered)
 
   tags = {
     Name = "HelloWorld2"
