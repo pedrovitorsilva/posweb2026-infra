@@ -1,6 +1,3 @@
-CREATE DATABASE myapp;
-
-USE myapp;
 
 CREATE TABLE People (
     id INT PRIMARY KEY AUTO_INCREMENT,
