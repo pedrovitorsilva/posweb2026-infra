@@ -1,5 +1,7 @@
+# Pipeline de CI/CD para realizar o deploy da aplicação na infraestrutura (EC2/RDS).
 name: Deploy MyAPP
 run-name: ${{ github.actor }} is deploying MyAPP 🚀
+# Dispara o pipeline automaticamente em pushes para a branch main ou manualmente.
 on:
   push:
     branches:
@@ -10,9 +12,11 @@ jobs:
   Deploy-MyAPP:
     runs-on: ubuntu-latest
     steps:
+      # Etapa 1: Baixa o código fonte do repositório para a máquina virtual do GitHub Actions
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      # Etapa 2: Substitui os placeholders no arquivo da API pelas credenciais do banco usando Secrets
       - name: Config BackEnd file
         run: |
           sed -i 's/_USER_/${{ secrets.DB_USERNAME }}/g' backend/myapi.py
@@ -20,6 +24,7 @@ jobs:
           sed -i 's/_HOST_/${{ secrets.DB_HOST }}/g' backend/myapi.py
           sed -i 's/_DBNAME_/${{ secrets.DB_NAME }}/g' backend/myapi.py
 
+      # Etapa 3: Transfere o arquivo backend configurado para o servidor EC2 via SCP
       - name: Deploy BackEnd
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -30,10 +35,12 @@ jobs:
           target: "/home/ubuntu/myapp/"
           strip_components: 1
 
+      # Etapa 4: Injeta o IP da API (Host) na interface web
       - name: Config FrontEnd file
         run: |
           sed -i 's/_API_ADDRESS_/${{ secrets.HOST }}/g' frontend/index.html
 
+      # Etapa 5: Publica a página web atualizada no servidor Nginx da EC2
       - name: Deploy FrontEnd
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -43,3 +50,26 @@ jobs:
           source: "frontend/index.html"
           target: "/var/www/html/"
           strip_components: 1
+
+      # Etapa 6: Envia o script de criação das tabelas para o servidor EC2
+      - name: Deploy DB script
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          source: "db/db.sql"
+          target: "/home/ubuntu/myapp/"
+          strip_components: 1
+
+      # Etapa 7: Acessa a EC2 via SSH para popular o banco de dados e reiniciar a API
+      - name: Run DB Migration & Restart API
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            mysql -h ${{ secrets.DB_HOST }} -u ${{ secrets.DB_USERNAME }} -p${{ secrets.DB_PASSWORD }} ${{ secrets.DB_NAME }} < /home/ubuntu/myapp/db.sql
+            sudo systemctl daemon-reload
+            sudo systemctl restart myapp.service
