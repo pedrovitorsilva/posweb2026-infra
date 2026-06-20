@@ -43,10 +43,7 @@ def get_people():
 
     cursor.close()
 
-    response = jsonify(people)
-    response.headers.add('Access-Control-Allow-Origin', '*')
-
-    return response
+    return jsonify(people)
 
 # Retrieve a single person by ID (R in CRUD)
 @app.route('/people/<int:id>', methods=['GET'])
@@ -94,4 +91,4 @@ def delete_person(id):
 
 # Run the application
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
