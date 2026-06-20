@@ -1,15 +1,25 @@
 **POSWEB 2026 - Infra** é um sistema web completo (end-to-end) que demonstra a integração de uma aplicação de gestão de pessoas com provisionamento automático de infraestrutura na nuvem (AWS) e pipeline de CI/CD contínuo.
 
+<div align="center">
+    
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
-
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css-%231572B6.svg?style=for-the-badge&logo=css&logoColor=white)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+
+</div>
+
+**Objetivo**: Aplicar os conhecimentos aprendidos em sala, durante as aulas de Infraestrutura para Web - Pós Graduação em Desenvolvimento Web, no IFBA - Campus Vitória da Conquista.
+
+**Entregáveis**: A infraestrutura provisionada conta com :
+- Front-end web estático;
+- Back-end com Flask;
+- Banco de dados relacional;
+- API para comunicação (back-end <-> banco de dados).
 
 ### 📖 Glossário de Tecnologias
 
@@ -69,7 +79,7 @@ terraform apply -auto-approve
 
 Este comando irá criar de forma automatizada:
 
-- Uma VPC isolada com os Security Groups da aplicação.
+- Uma VPC isolada(usará a VPC padrão da sua conta) com os Security Groups da aplicação.
 - Uma Instância EC2 (Ubuntu) já com Nginx, Python e o daemon da API habilitado.
 - Um Banco de Dados RDS (MySQL).
 
