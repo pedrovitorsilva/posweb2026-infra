@@ -23,6 +23,11 @@ cd /home/ubuntu/myapp
 python3 -m venv .
 source ./bin/activate
 
+# Concede permissão ao usuário ubuntu para os deploys via GitHub Actions (SCP)
+chown -R ubuntu:ubuntu /home/ubuntu/myapp
+chown -R ubuntu:ubuntu /var/www/html
+chmod -R 775 /var/www/html
+
 # Instala as dependências do Flask
 pip install \
     flask \
